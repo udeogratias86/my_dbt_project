@@ -31,14 +31,16 @@ models:
         tests:
           - relationships:
               name: brand_id_foreign_key_in_stg_local_bike__products
-              to: ref('stg_local_bike__brands')
-              field: brand_id
+              arguments:
+                to: ref('stg_local_bike__brands')
+                field: brand_id
       - name: category_id
         tests:
           - relationships:
               name: category_id_foreign_key_in_stg_local_bike__products
-              to: ref('stg_local_bike__categories')
-              field: category_id
+              arguments:
+                to: ref('stg_local_bike__categories')
+                field: category_id
       - name: model_year
       - name: list_price
 
@@ -70,8 +72,9 @@ models:
         tests:
           - relationships:
               name: store_id_foreign_key_in_stg_local_bike__staffs
-              to: ref('stg_local_bike__stores')
-              field: store_id
+              arguments:
+                to: ref('stg_local_bike__stores')
+                field: store_id
       - name: manager_id
 
   - name: stg_local_bike__customers
@@ -101,8 +104,9 @@ models:
         tests:
           - relationships:
               name: customer_id_foreign_key_in_stg_local_bike__orders
-              to: ref('stg_local_bike__customers')
-              field: customer_id
+              arguments:
+                to: ref('stg_local_bike__customers')
+                field: customer_id
       - name: order_status
       - name: order_date
         tests:
@@ -114,15 +118,16 @@ models:
         tests:
           - relationships:
               name: store_id_foreign_key_in_stg_local_bike__orders
-              to: ref('stg_local_bike__stores')
-              field: store_id
+              arguments:
+                to: ref('stg_local_bike__stores')
+                field: store_id
       - name: staff_id
         tests:
           - relationships:
               name: staff_id_foreign_key_in_stg_local_bike__orders
-              to: ref('stg_local_bike__staffs')
-              field: staff_id
-
+              arguments:
+                to: ref('stg_local_bike__staffs')
+                field: staff_id
   - name: stg_local_bike__order_items
     description: "Order line items."
     columns:
@@ -131,8 +136,9 @@ models:
           - not_null
           - relationships:
               name: order_id_foreign_key_in_stg_local_bike__order_items
-              to: ref('stg_local_bike__orders')
-              field: order_id
+              arguments:
+                to: ref('stg_local_bike__orders')
+                field: order_id
       - name: item_id
         tests:
           - not_null
@@ -141,8 +147,9 @@ models:
           - not_null
           - relationships:
               name: product_id_foreign_key_in_stg_local_bike__order_items
-              to: ref('stg_local_bike__products')
-              field: product_id
+              arguments:
+                to: ref('stg_local_bike__products')
+                field: product_id
       - name: quantity
         tests:
           - not_null
@@ -157,13 +164,15 @@ models:
           - not_null
           - relationships:
               name: store_id_foreign_key_in_stg_local_bike__stocks
-              to: ref('stg_local_bike__stores')
-              field: store_id
+              arguments:
+                to: ref('stg_local_bike__stores')
+                field: store_id
       - name: product_id
         tests:
           - not_null
           - relationships:
               name: product_id_foreign_key_in_stg_local_bike__stocks
-              to: ref('stg_local_bike__products')
-              field: product_id
+              arguments:
+                to: ref('stg_local_bike__products')
+                field: product_id
       - name: quantity
