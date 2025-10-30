@@ -24,5 +24,5 @@ select
   line_list_price,
   line_discount,
   gross_amount,
-  net_amount
+  round(net_amount,2) as net_amount
 from {{ ref('int_local_bike__order_item') }}
