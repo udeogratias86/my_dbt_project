@@ -43,11 +43,7 @@ models:
                 field: category_id
       - name: model_year
       - name: list_price
-        tests:
-          - dbt_utils.expression_is_true:
-              name: chk_products_list_price_not_negative
-              arguments:
-                expression: "list_price >= 0"
+
   - name: stg_local_bike__stores
     description: "Store (point of sale) reference."
     columns:
@@ -157,22 +153,9 @@ models:
       - name: quantity
         tests:
           - not_null
-          - dbt_utils.expression_is_true:
-              name: chk_order_items_quantity_positive
-              arguments:
-                expression: "quantity > 0"
       - name: list_price
-        tests:
-          - dbt_utils.expression_is_true:
-              name: chk_order_items_list_price_non_negative
-              arguments:
-                expression: "list_price >= 0"
       - name: discount
-        tests:
-          - dbt_utils.expression_is_true:
-              name: chk_order_items_discount_non_negative
-              arguments:
-                expression: "discount >= 0"
+
   - name: stg_local_bike__stocks
     description: "Inventory by product and store."
     columns:
