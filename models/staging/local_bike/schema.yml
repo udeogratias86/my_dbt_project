@@ -1,33 +1,43 @@
 version: 2
 
 models:
+  # Brand table
   - name: stg_local_bike__brands
-    description: "Brand reference table."
+    description: "Reference table containing all product brands available at Local Bike."
     columns:
       - name: brand_id
+        description: "Primary key — unique identifier for each brand."
         tests:
           - unique
           - not_null
       - name: brand_name
+        description: "Name of the brand (e.g., Trek, Cannondale, Giant)."
 
+  # Categories table  
   - name: stg_local_bike__categories
-    description: "Product category reference table."
+    description: "Reference table listing all product categories (e.g., Mountain, Road, Electric)."
     columns:
       - name: category_id
+        description: "Primary key — unique identifier for each product category."
         tests:
           - unique
           - not_null
       - name: category_name
+        description: "Descriptive name of the product category."
 
+  # Products table
   - name: stg_local_bike__products
-    description: "Product catalog with key attributes."
+    description: "Product catalog containing detailed information about each product sold by Local Bike."
     columns:
       - name: product_id
+        description: "Primary key — unique identifier for each product."
         tests:
           - unique
           - not_null
       - name: product_name
+        description: "Product name or model name."
       - name: brand_id
+        description: "Foreign key — links the product to its brand."
         tests:
           - relationships:
               name: brand_id_foreign_key_in_stg_local_bike__products
@@ -35,6 +45,7 @@ models:
                 to: ref('stg_local_bike__brands')
                 field: brand_id
       - name: category_id
+        description: "Foreign key — links the product to its category."
         tests:
           - relationships:
               name: category_id_foreign_key_in_stg_local_bike__products
@@ -42,33 +53,49 @@ models:
                 to: ref('stg_local_bike__categories')
                 field: category_id
       - name: model_year
+        description: "Year of the product model release."
       - name: list_price
+        description: "List price (unit retail price) of the product."
 
+  # Stores table
   - name: stg_local_bike__stores
-    description: "Store (point of sale) reference."
+    description: "Reference table listing all Local Bike stores with their geographical information."
     columns:
       - name: store_id
+        description: "Primary key — unique identifier for each store."
         tests:
           - unique
           - not_null
       - name: store_name
+        description: "Official name of the store."
       - name: city
+        description: "City where the store is located."
       - name: state
+        description: "State where the store is located."
       - name: zip_code
+        description: "ZIP code of the store."
 
+  # Staffs table
   - name: stg_local_bike__staffs
-    description: "Employees (sales/ops staff)."
+    description: "Employees and staff members working across all Local Bike stores."
     columns:
       - name: staff_id
+        description: "Primary key — unique identifier for each staff member."
         tests:
           - unique
           - not_null
       - name: first_name
+        description: "First name of the staff member."
       - name: last_name
+        description: "Last name of the staff member."
       - name: email
+        description: "Staff member's professional email address."
       - name: phone
+        description: "Contact phone number."
       - name: active
+        description: "Indicates whether the staff member is active (1) or inactive (0)."
       - name: store_id
+        description: "Foreign key — links the staff member to their assigned store."
         tests:
           - relationships:
               name: store_id_foreign_key_in_stg_local_bike__staffs
@@ -76,31 +103,45 @@ models:
                 to: ref('stg_local_bike__stores')
                 field: store_id
       - name: manager_id
+        description: "ID of the manager supervising this staff member (may reference another staff_id)."
 
+  # Customers table
   - name: stg_local_bike__customers
-    description: "End-customer reference."
+    description: "End-customer reference data including identity and contact information."
     columns:
       - name: customer_id
+        description: "Primary key — unique identifier for each customer."
         tests:
           - unique
           - not_null
       - name: first_name
+        description: "Customer first name."
       - name: last_name
+        description: "Customer last name."
       - name: phone
+        description: "Customer phone number."
       - name: email
+        description: "Customer email address."
       - name: street
+        description: "Customer street address."
       - name: city
+        description: "Customer city of residence."
       - name: state
+        description: "Customer state or region."
       - name: zip_code
+        description: "Customer ZIP code."
 
+  # Orders table  
   - name: stg_local_bike__orders
-    description: "Order headers."
+    description: "Order headers containing order status, dates, and customer/store references."
     columns:
       - name: order_id
+        description: "Primary key — unique identifier for each order."
         tests:
           - unique
           - not_null
       - name: customer_id
+        description: "Foreign key — identifies the customer who placed the order."
         tests:
           - relationships:
               name: customer_id_foreign_key_in_stg_local_bike__orders
@@ -108,13 +149,17 @@ models:
                 to: ref('stg_local_bike__customers')
                 field: customer_id
       - name: order_status
+        description: "Current status of the order (created, shipped, delivered, canceled, etc.)."
       - name: order_date
+        description: "Date when the order was created."
         tests:
           - not_null
       - name: required_date
-      - name: shipped_date_raw
+        description: "Date requested for delivery."
       - name: shipped_date
+        description: " Order shipping date."
       - name: store_id
+        description: "Foreign key — store that processed the order."
         tests:
           - relationships:
               name: store_id_foreign_key_in_stg_local_bike__orders
@@ -122,16 +167,25 @@ models:
                 to: ref('stg_local_bike__stores')
                 field: store_id
       - name: staff_id
+        description: "Foreign key — staff member responsible for handling the order."
         tests:
           - relationships:
               name: staff_id_foreign_key_in_stg_local_bike__orders
               arguments:
                 to: ref('stg_local_bike__staffs')
                 field: staff_id
+
+  # Order_items table
   - name: stg_local_bike__order_items
-    description: "Order line items."
+    description: "Line items associated with orders, representing individual products sold."
     columns:
+      - name: order_item_id
+        description: "Primary key (composite with order_id and item_id) — unique identifier for each order_item."
+        tests:
+          - unique
+          - not_null
       - name: order_id
+        description: "Foreign key — links the item to its parent order."
         tests:
           - not_null
           - relationships:
@@ -140,9 +194,11 @@ models:
                 to: ref('stg_local_bike__orders')
                 field: order_id
       - name: item_id
+        description: "identifies a unique order line."
         tests:
           - not_null
       - name: product_id
+        description: "Foreign key — identifies the product associated with this order line."
         tests:
           - not_null
           - relationships:
@@ -151,15 +207,21 @@ models:
                 to: ref('stg_local_bike__products')
                 field: product_id
       - name: quantity
+        description: "Quantity of the product ordered."
         tests:
           - not_null
       - name: list_price
+        description: "Unit price of the product at the time of sale."
       - name: discount
+        description: "Discount percentage applied (expressed between 0 and 1)."
 
+ 
+  # Stocks Table
   - name: stg_local_bike__stocks
-    description: "Inventory by product and store."
+    description: "Inventory levels by product and store."
     columns:
       - name: store_id
+        description: "Foreign key — identifies the store where the product is stocked."
         tests:
           - not_null
           - relationships:
@@ -168,6 +230,7 @@ models:
                 to: ref('stg_local_bike__stores')
                 field: store_id
       - name: product_id
+        description: "Foreign key — identifies the product in stock."
         tests:
           - not_null
           - relationships:
@@ -176,3 +239,4 @@ models:
                 to: ref('stg_local_bike__products')
                 field: product_id
       - name: quantity
+        description: "Current number of units available in stock for this product and store."
