@@ -1,11 +1,3 @@
-{{
-  config(
-    materialized='table',
-    partition_by={'field': 'order_date', 'data_type': 'date'},
-    cluster_by=['customer_id','store_id']
-  )
-}}
-
 with
 -- 1) Base : on sélectionne uniquement les colonnes utiles
 base as (
@@ -122,3 +114,4 @@ select
 from order_agg oa
 join ship_agg sa on sa.order_id = oa.order_id
 join lead_times lt on lt.order_id = oa.order_id
+
