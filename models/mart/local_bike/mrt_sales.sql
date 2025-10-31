@@ -11,11 +11,11 @@ select
   sl.order_date,
   sl.required_date,
   sl.shipped_date,
-  sl.order_status,
+  cast(sl.order_status as string) as order_status,
 
   -- attributs PRODUIT (via int)
   ip.product_name,
-  ip.model_year,
+  cast(ip.model_year as string) as model_year,
   ip.category_name,
   ip.brand_name,
 
@@ -23,7 +23,7 @@ select
   isr.store_name,
   isr.store_city,
   isr.store_state,
-  isr.store_zip_code,
+  cast(isr.store_zip_code as string) as store_zip_code,
 
   -- attributs STAFF (via int)
   ist.first_name as staff_first_name,
