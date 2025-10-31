@@ -1,10 +1,10 @@
 select
   -- grain & keys
+  sl.order_item_id,
   sl.order_id,
   sl.item_id,
   sl.customer_id,
   sl.store_id,
-  sl.staff_id,
   sl.product_id,
 
   -- dates & statut
@@ -28,12 +28,12 @@ select
   -- attributs STAFF (via int)
   ist.first_name as staff_first_name,
   ist.last_name  as staff_last_name,
-  ist.email      as staff_email,
+  trim(concat(coalesce(ist.first_name, ''), ' ', coalesce(ist.last_name, ''))) as staff_full_name,
 
   -- métriques
   sl.quantity,
   sl.line_list_price,
-  sl.line_discount,         -- % (0..1)
+  sl.line_discount,
   sl.gross_amount,
   sl.net_amount
 
