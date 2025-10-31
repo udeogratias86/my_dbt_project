@@ -1,0 +1,189 @@
+version: 2
+
+models:
+  # int_local_bike__product
+  - name: int_local_bike__product
+    description: "Enriched product hub that combines product data with brand and category details from the staging layer. This model provides a unified and consistent product reference, simplifying downstream joins and analyses."
+    columns:
+      - name: product_id
+        description: "Primary key — unique identifier for each product."
+        tests:
+          - unique
+          - not_null
+      - name: product_name
+        description: "Product name or model name."
+      - name: model_year
+        description: "Year of the product model release."
+      - name: list_price
+        description: "List price (unit retail price) of the product."
+      - name: brand_id
+        description: "Brand identifier of the product."
+      - name: brand_name
+        description: "Brand name for the product."
+      - name: category_id
+        description: "Category identifier of the product."
+      - name: category_name
+        description: "Category name for the product."
+
+  # int_local_bike__store
+  - name: int_local_bike__store
+    description: "Intermediate model consolidating store data with standardized location details (city, state, zip code) for consistent geographic analysis and store-based aggregations."
+    columns:
+      - name: store_id
+        description: "Primary key — unique identifier for each store."
+        tests:
+          - unique
+          - not_null
+      - name: store_name
+        description: "Official name of the store."
+      - name: store_city
+        description: "City where the store is located."
+      - name: store_state
+        description: "State or region of the store."
+      - name: store_zip_code
+        description: "Postal/ZIP code of the store."
+
+  # int_local_bike__customer
+  - name: int_local_bike__customer
+    description: "Intermediate model cleaning and standardizing customer data. It consolidates key contact and demographic attributes to prepare for segmentation, retention, and loyalty analysis in the marts layer."
+    columns:
+      - name: customer_id
+        description: "Primary key — unique identifier for each customer."
+        tests:
+          - unique
+          - not_null
+      - name: first_name
+        description: "Customer’s first name."
+      - name: last_name
+        description: "Customer’s last name."
+      - name: email
+        description: "Customer’s email address."
+      - name: city
+        description: "Customer’s city."
+      - name: state
+        description: "Customer’s state/region."
+      - name: zip_code
+        description: "Customer’s ZIP/postal code."
+
+  # int_local_bike__staff
+  - name: int_local_bike__staff
+    description: "Intermediate model that unifies staff information with their corresponding store assignments. This view supports downstream analyses on sales performance by employee, team productivity, and store staffing insights."
+    columns:
+      - name: staff_id
+        description: "Primary key — unique identifier for each staff member."
+        tests:
+          - unique
+          - not_null
+      - name: first_name
+        description: "Staff member’s first name."
+      - name: last_name
+        description: "Staff member’s last name."
+      - name: email
+        description: "Professional email address."
+      - name: phone
+        description: "Contact phone number."
+      - name: store_id
+        description: "Store where the staff member works."
+
+  # int_local_bike__sales_line
+  - name: int_local_bike__sales_line
+    description: "Line-level sales model merging order and order_item data from the staging layer. It introduces business logic for calculating gross and net amounts and ensures data consistency before enrichment with product, staff, and store hubs in the marts layer."
+    columns:
+      - name: order_id
+        description: "Component of the composite grain — parent order identifier."
+        tests:
+          - not_null
+      - name: item_id
+        description: "Component of the composite grain — line identifier within the order."
+        tests:
+          - not_null
+      - name: customer_id
+        description: "Customer who placed the order."
+      - name: store_id
+        description: "Store that processed the order."
+      - name: staff_id
+        description: "Staff member responsible for the order."
+      - name: product_id
+        description: "Product sold on this line."
+      - name: order_date
+        description: "Order creation date."
+      - name: required_date
+        description: "Requested delivery date."
+      - name: shipped_date
+        description: "Actual shipping date (nullable)."
+      - name: order_status
+        description: "Order workflow status."
+      - name: quantity
+        description: "Units sold on this line."
+      - name: line_list_price
+        description: "Unit price at the time of sale."
+      - name: line_discount
+        description: "Discount percentage applied (0–1)."
+      - name: gross_amount
+        description: "Pre-discount amount (quantity × list_price)."
+      - name: net_amount
+        description: "Post-discount amount (gross × (1 - discount))."
+
+  # int_local_bike__sales_store_month
+  - name: int_local_bike__sales_store_month
+    description: "Aggregated sales model summarizing store performance on a monthly basis. It calculates total quantities and revenues per store, serving as a foundation for operational KPIs and revenue trend dashboards."
+    columns:
+      - name: store_id
+        description: "Store identifier."
+        tests:
+          - not_null
+      - name: store_name
+        description: "Store name at the time of aggregation."
+      - name: store_city
+        description: "City of the store."
+      - name: store_state
+        description: "State/region of the store."
+      - name: month
+        description: "Month bucket (first day of month)."
+        tests:
+          - not_null
+      - name: qty
+        description: "Total quantity sold in the month for the store."
+      - name: revenue
+        description: "Total net revenue in the month for the store."
+
+  # int_local_bike__sales_product_month
+  - name: int_local_bike__sales_product_month
+    description: "Monthly product performance model aggregating sales by product and month. It enriches the result with category and brand information to support product-level profitability and trend analysis."
+    columns:
+      - name: product_id
+        description: "Product identifier."
+        tests:
+          - not_null
+      - name: product_name
+        description: "Product name at the time of aggregation."
+      - name: category_name
+        description: "Category name of the product."
+      - name: brand_name
+        description: "Brand name of the product."
+      - name: month
+        description: "Month bucket (first day of month)."
+        tests:
+          - not_null
+      - name: qty
+        description: "Total quantity sold in the month for the product."
+      - name: revenue
+        description: "Total net revenue in the month for the product."
+
+  # int_local_bike__date
+  - name: int_local_bike__date
+    description: "Date spine model generating a continuous range of calendar dates with derived time attributes (year, quarter, month, year_month). This model supports all time-based aggregations in the marts layer."
+    columns:
+      - name: date
+        description: "Primary key — calendar date."
+        tests:
+          - unique
+          - not_null
+      - name: year
+        description: "Calendar year."
+      - name: quarter
+        description: "Calendar quarter number (1–4)."
+      - name: month
+        description: "Calendar month number (1–12)."
+      - name: year_month
+        description: "Formatted YYYY-MM representation."
