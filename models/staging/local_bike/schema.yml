@@ -68,12 +68,18 @@ models:
           - not_null
       - name: store_name
         description: "Official name of the store."
+      - name: phone
+        description: "Store main contact phone number, formatted as (XXX) XXX-XXXX."
+      - name: email
+        description: "General contact email address for the store."
+      - name: street
+        description: "Street address of the store location."
       - name: city
         description: "City where the store is located."
       - name: state
-        description: "State where the store is located."
+        description: "State or region where the store operates."
       - name: zip_code
-        description: "ZIP code of the store."
+        description: "ZIP or postal code of the store."
 
   # Staffs table
   - name: stg_local_bike__staffs
