@@ -28,6 +28,8 @@ models:
         +schema: stg_sales_database
       google_sheets:
         +schema: stg_google_sheets
+      local_bike:
+        +schema: stg_local_bike
       +materialized: view
 
     intermediate:
@@ -35,6 +37,8 @@ models:
         +schema: int_sales_database
       google_analytics:
         +schema: int_google_analytics
+      local_bike:
+        +schema: int_local_bike
       +materialized: view
 
     mart:

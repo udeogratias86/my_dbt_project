@@ -56,6 +56,8 @@ models:
         description: "Customer’s first name."
       - name: last_name
         description: "Customer’s last name."
+      - name: customer_full_name
+        description: "Customer’s full name."
       - name: email
         description: "Customer’s email address."
       - name: city
@@ -78,14 +80,18 @@ models:
         description: "Staff member’s first name."
       - name: last_name
         description: "Staff member’s last name."
+      - name: staff_full_name
+        description: "Staff member’s full name."
       - name: email
         description: "Professional email address."
       - name: phone
         description: "Contact phone number."
       - name: store_id
         description: "Store where the staff member works."
+      - name: active
+        description: "is staff member still work for the company."
 
-  # int_local_bike__sales_line
+ # int_local_bike__sales_line
   - name: int_local_bike__sales_line
     description: "Line-level sales model merging order and order_item data from the staging layer. It introduces business logic for calculating gross and net amounts and ensures data consistency before enrichment with product, staff, and store hubs in the marts layer."
     columns:
@@ -102,14 +108,7 @@ models:
         description: "Component of the composite grain — line identifier within the order."
         tests:
           - not_null
-      - name: customer_id
-        description: "Customer who placed the order."
-      - name: store_id
-        description: "Store that processed the order."
-      - name: staff_id
-        description: "Staff member responsible for the order."
-      - name: product_id
-        description: "Product sold on this line."
+
       - name: order_date
         description: "Order creation date."
       - name: required_date
@@ -118,6 +117,16 @@ models:
         description: "Actual shipping date (nullable)."
       - name: order_status
         description: "Order workflow status."
+
+      - name: customer_id
+        description: "Customer who placed the order."
+      - name: store_id
+        description: "Store that processed the order."
+      - name: staff_id
+        description: "Staff member responsible for the order."
+      - name: product_id
+        description: "Product sold on this line."
+
       - name: quantity
         description: "Units sold on this line."
       - name: line_list_price
@@ -128,6 +137,37 @@ models:
         description: "Pre-discount amount (quantity × list_price)."
       - name: net_amount
         description: "Post-discount amount (gross × (1 - discount))."
+
+      # Stock indicators
+      - name: stock_quantity
+        description: "On-hand stock level for the product in the selling store at the time of the order."
+      - name: remaining_stock
+        description: "Stock remaining after the sale (stock_quantity − quantity)."
+      - name: stock_status
+        description: "Stock availability category: 'out_of_stock', 'low_stock', or 'sufficient_stock'."
+      - name: stock_to_sales_ratio
+        description: "Ratio of stock to units sold on the line (stock_quantity ÷ quantity)."
+
+      # Logistics performance indicators
+      - name: processing_time_days
+        description: "Number of days from order_date to shipped_date; 0 for immediate pickup; null if not applicable."
+      - name: delivery_margin_days
+        description: "Days between required_date and shipped_date; positive values indicate shipping before/at the required date."
+      - name: delivery_status
+        description: "Shipment timeliness category: 'immediate_pickup', 'shipped_on_time', or 'shipped_late'."
+      - name: delivery_performance_indicator
+        description: "High-level delivery KPI classification: 'immediate', 'warning', or 'good'."
+
+      # Descriptive enrichments
+      - name: product_name
+        description: "Human-readable product name associated with the line."
+      - name: store_name
+        description: "Human-readable name of the store that processed the order."
+      - name: staff_first_name
+        description: "First name of the staff member handling the order."
+      - name: staff_last_name
+        description: "Last name of the staff member handling the order."
+
 
   # int_local_bike__date
   - name: int_local_bike__date
