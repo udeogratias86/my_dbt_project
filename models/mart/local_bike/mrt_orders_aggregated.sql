@@ -125,6 +125,12 @@ select
     when total_items > 0 then 
       round(total_net_amount / total_items, 2)
     else 0
-  end as avg_amount_per_item
+  end as avg_amount_per_item,
+
+  case 
+    when total_items >= 5 then 'bulk_purchase'
+    when total_items >= 3 then 'medium_purchase'
+    else 'single_purchase'
+  end as purchase_size_category
 
 from order_metrics

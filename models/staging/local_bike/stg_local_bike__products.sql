@@ -1,6 +1,6 @@
 select
   product_id,
-  product_name,
+  regexp_replace(product_name, r'\s*-\s*\d{4}.*$', '') as product_name,  
   brand_id,
   category_id,
   model_year,
