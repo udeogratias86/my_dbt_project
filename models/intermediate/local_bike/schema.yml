@@ -89,6 +89,11 @@ models:
   - name: int_local_bike__sales_line
     description: "Line-level sales model merging order and order_item data from the staging layer. It introduces business logic for calculating gross and net amounts and ensures data consistency before enrichment with product, staff, and store hubs in the marts layer."
     columns:
+      - name: order_item_id
+        description: "Primary key (composite with order_id and item_id) — unique identifier for each order_item."
+        tests:
+          - unique
+          - not_null
       - name: order_id
         description: "Component of the composite grain — parent order identifier."
         tests:
