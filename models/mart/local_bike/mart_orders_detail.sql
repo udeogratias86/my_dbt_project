@@ -34,19 +34,6 @@ select
   store_name,
   staff_first_name,
   staff_last_name,
-
-  -- Métriques supplémentaires pour l'analyse détaillée
-  case 
-    when line_discount > 0 then 'discounted'
-    else 'full_price'
-  end as pricing_type,
+  round((line_discount * line_list_price), 2) as discount_amount
   
-  round((line_discount * line_list_price), 2) as discount_amount,
-  
-  case 
-    when quantity >= 5 then 'bulk_purchase'
-    when quantity >= 3 then 'medium_purchase'
-    else 'single_purchase'
-  end as purchase_size_category
-
 from {{ ref('int_local_bike__sales_line') }}
