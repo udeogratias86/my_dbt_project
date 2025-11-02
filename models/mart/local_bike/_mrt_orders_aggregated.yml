@@ -1,0 +1,88 @@
+version: 2
+
+models:
+  - name: mrt_orders_aggregated
+    description: "{{ doc('mrt_orders_aggregated') }}"
+    columns:
+
+      - name: order_id
+        description: "Unique order identifier (aggregation grain)."
+      - name: order_date
+        description: "Date the order was created."
+      - name: required_date
+        description: "Customer-requested delivery date."
+      - name: shipped_date
+        description: "Actual shipping date; null if not shipped or immediate pickup."
+      - name: order_status
+        description: "Workflow status of the order."
+      - name: customer_id
+        description: "Customer who placed the order."
+      - name: store_id
+        description: "Store that processed the order."
+      - name: store_name
+        description: "Human-readable store name."
+      - name: staff_first_name
+        description: "First name of the staff member associated with the order."
+      - name: staff_last_name
+        description: "Last name of the staff member associated with the order."
+
+      - name: total_items
+        description: "Count of distinct line items in the order."
+      - name: unique_products
+        description: "Count of distinct products in the order."
+      - name: total_quantity
+        description: "Total units sold across all lines."
+      - name: total_gross_amount
+        description: "Sum of pre-discount amounts across lines."
+      - name: total_net_amount
+        description: "Sum of post-discount amounts across lines."
+      - name: avg_discount_rate
+        description: "Average line discount (0–1) across the order."
+      - name: discounted_items_count
+        description: "Number of lines where a discount was applied."
+      - name: out_of_stock_items
+        description: "Count of lines flagged as 'out_of_stock'."
+      - name: low_stock_items
+        description: "Count of lines flagged as 'low_stock'."
+      - name: avg_stock_to_sales_ratio
+        description: "Average stock-to-sales ratio across lines."
+      - name: min_stock_quantity
+        description: "Minimum on-hand stock observed among order lines."
+      - name: max_stock_quantity
+        description: "Maximum on-hand stock observed among order lines."
+      - name: overall_delivery_status
+        description: "Overall delivery status derived from line-level statuses."
+      - name: overall_performance
+        description: "Overall performance label from the intermediate layer."
+      - name: avg_processing_time_days
+        description: "Average days from order to ship across lines."
+      - name: min_processing_time_days
+        description: "Minimum processing time (days) among lines."
+      - name: max_processing_time_days
+        description: "Maximum processing time (days) among lines."
+      - name: avg_delivery_margin_days
+        description: "Average difference (days) between required and shipped dates."
+      - name: out_of_stock_percentage
+        description: "Percentage of lines that were out_of_stock (0–100)."
+      - name: discount_percentage
+        description: "Percentage of lines with a discount (0–100)."
+      - name: order_value_category
+        description: "Order value band based on total_net_amount: 'high_value', 'medium_value', 'low_value'."
+      - name: actual_processing_days
+        description: "Days between order_date and shipped_date (null if not shipped)."
+      - name: delivery_performance
+        description: "Delivery performance label: 'excellent', 'good', 'poor', or 'pending'."
+      - name: risk_indicator
+        description: "Composite risk flag: 'stock_risk', 'delivery_risk', 'urgent_risk', or 'no_risk'."
+      - name: performance_score
+        description: "Overall performance score (0–100) combining delivery status and timing."
+      - name: total_discount_amount
+        description: "Total monetary discount across lines (gross − net)."
+      - name: total_discount_rate
+        description: "Overall discount rate on gross amount (0–100)."
+      - name: avg_price_per_unit
+        description: "Average net price per unit = total_net_amount / total_quantity."
+      - name: avg_amount_per_item
+        description: "Average net amount per line item = total_net_amount / total_items."
+      - name: purchase_size_category
+        description: "Bucket by number of items: 'bulk_purchase' (>=5), 'medium_purchase' (>=3), else 'single_purchase'."

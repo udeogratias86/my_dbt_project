@@ -1,0 +1,64 @@
+version: 2
+
+models:
+  - name: mart_orders_detail
+    description: "{{ doc('mart_orders_detail') }}"
+    columns:
+      - name: order_item_id
+        description: "Unique identifier for each order line item."
+      - name: order_id
+        description: "Parent order identifier."
+      - name: item_id
+        description: "Line identifier within the order."
+      - name: order_date
+        description: "Date the order was created."
+      - name: required_date
+        description: "Requested delivery date by the customer."
+      - name: shipped_date
+        description: "Actual shipping date; may be null for immediate pickup."
+      - name: order_status
+        description: "Workflow status of the order (e.g., created, shipped, delivered)."
+      - name: customer_id
+        description: "Customer who placed the order."
+      - name: store_id
+        description: "Store that processed the order."
+      - name: staff_id
+        description: "Employee responsible for handling the order."
+      - name: product_id
+        description: "Product sold in this order line."
+      - name: quantity
+        description: "Quantity of units sold."
+      - name: line_list_price
+        description: "Unit price at the time of sale (currency in USD)."
+      - name: line_discount
+        description: "Discount fraction applied to the line (0–1)."
+      - name: gross_amount
+        description: "Pre-discount total = quantity × list price."
+      - name: net_amount
+        description: "Post-discount total = gross × (1 - discount)."
+      - name: stock_quantity
+        description: "Available stock for the product in the store at the time of order."
+      - name: remaining_stock
+        description: "Stock remaining after the sale (stock_quantity - quantity)."
+      - name: stock_status
+        description: "Stock availability label ('out_of_stock', 'low_stock', 'sufficient_stock')."
+      - name: stock_to_sales_ratio
+        description: "Ratio of stock to units sold (stock_quantity ÷ quantity)."
+      - name: processing_time_days
+        description: "Number of days between order_date and shipped_date."
+      - name: delivery_margin_days
+        description: "Difference in days between required_date and shipped_date."
+      - name: delivery_status
+        description: "Delivery classification ('immediate_pickup', 'shipped_on_time', 'shipped_late')."
+      - name: delivery_performance_indicator
+        description: "High-level delivery KPI: 'immediate', 'warning', or 'good'."
+      - name: product_name
+        description: "Human-readable name of the product sold."
+      - name: store_name
+        description: "Readable name of the store where the order was processed."
+      - name: staff_first_name
+        description: "First name of the staff member handling the order."
+      - name: staff_last_name
+        description: "Last name of the staff member handling the order."
+      - name: discount_amount
+        description: "Monetary value of the discount applied to this line (rounded to 2 decimals)."
