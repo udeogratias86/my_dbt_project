@@ -16,20 +16,14 @@ select
   line_discount,
   gross_amount,
   net_amount,
-  
-  -- Indicateurs de stock
   stock_quantity,
   remaining_stock,
   stock_status,
   stock_to_sales_ratio,
-  
-  -- Indicateurs de performance logistique
   processing_time_days,
   delivery_margin_days,
   delivery_status,
   delivery_performance_indicator,
-  
-  -- Informations supplémentaires
   product_name,
   store_name,
   staff_first_name,

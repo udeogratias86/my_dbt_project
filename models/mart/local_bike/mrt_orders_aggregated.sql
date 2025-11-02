@@ -2,8 +2,6 @@
 with order_metrics as (
   select
     order_id,
-    
-    -- Informations de base de la commande (pas besoin de MIN() puisque même valeur par commande)
     order_date,
     required_date,
     shipped_date,
@@ -14,7 +12,7 @@ with order_metrics as (
     staff_first_name,
     staff_last_name,
     
-    -- Agrégations financières
+    -- Indicateurs de finance 
     count(distinct order_item_id) as total_items,
     count(distinct product_id) as unique_products,
     sum(quantity) as total_quantity,
@@ -23,18 +21,18 @@ with order_metrics as (
     round(avg(line_discount), 4) as avg_discount_rate,
     sum(case when line_discount > 0 then 1 else 0 end) as discounted_items_count,
     
-    -- Indicateurs de stock agrégés
+    -- Indicateurs de stock 
     sum(case when stock_status = 'out_of_stock' then 1 else 0 end) as out_of_stock_items,
     sum(case when stock_status = 'low_stock' then 1 else 0 end) as low_stock_items,
     round(avg(stock_to_sales_ratio), 2) as avg_stock_to_sales_ratio,
     min(stock_quantity) as min_stock_quantity,
     max(stock_quantity) as max_stock_quantity,
     
-    -- Indicateurs de performance logistique
+    -- Indicateurs de logistique
     delivery_status as overall_delivery_status,
     delivery_performance_indicator as overall_performance,
     
-    -- Métriques de délai (ici on garde les agrégations car elles peuvent varier par ligne)
+    -- Métriques de délai 
     round(avg(processing_time_days), 2) as avg_processing_time_days,
     round(min(processing_time_days), 2) as min_processing_time_days,
     round(max(processing_time_days), 2) as max_processing_time_days,
@@ -49,8 +47,6 @@ with order_metrics as (
 
 select 
   *,
-  
-  -- Métriques calculées supplémentaires avec arrondis
   case 
     when total_items > 0 then 
       round((out_of_stock_items * 100.0 / total_items), 2)
@@ -69,7 +65,6 @@ select
     else 'low_value'
   end as order_value_category,
   
-  -- Délai avant expédition (si expédié)
   case 
     when shipped_date is not null then 
       date_diff(shipped_date, order_date, day)
@@ -83,8 +78,7 @@ select
     when overall_delivery_status = 'shipped_late' then 'poor'
     else 'pending'
   end as delivery_performance,
-  
-  -- Indicateur de risque composite
+
   case 
     when out_of_stock_items > 0 then 'stock_risk'
     when overall_delivery_status = 'shipped_late' then 'delivery_risk'
@@ -92,7 +86,7 @@ select
     else 'no_risk'
   end as risk_indicator,
   
-  -- Score de performance (0-100) avec arrondi
+  -- Score de performance (0-100)
   round(
     case 
       when overall_delivery_status = 'immediate_pickup' then 100
@@ -105,7 +99,7 @@ select
     end, 2
   ) as performance_score,
   
-  -- Rentabilité avec arrondis
+  -- Rentabilité 
   round((total_gross_amount - total_net_amount), 2) as total_discount_amount,
   
   case 
@@ -114,7 +108,7 @@ select
     else 0
   end as total_discount_rate,
 
-  -- Métriques supplémentaires arrondies
+  -- Autres
   case 
     when total_quantity > 0 then 
       round(total_net_amount / total_quantity, 2)
